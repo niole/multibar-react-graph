@@ -2,8 +2,24 @@
 /*global React*/
 
 var React = require('react');
-var Test = require('./Test.jsx');
+var Chart = require('./Chart.jsx');
+var Data = require('./Data.js');
 
-var App = React.render( <Test/>, $('#container')[0]);
 
-module.exports = App;
+var Interface = React.createClass({
+
+  render: function(){
+    return(
+      <Chart
+        data={Data.data}
+        titles={Data.titles}
+        height={500}
+        width={500}
+        xHeader={"days of the week"}
+        yHeader={"number of organisms"}
+      />
+    );
+  }
+});
+
+React.render( <Interface/>, $('#container')[0]);
