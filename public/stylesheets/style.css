@@ -1,16 +1,19 @@
-.0 {
-  background-color: black;
+.zero {
+  background-color: #161b1b;
 }
 
-.1 {
-  background-color: blue;
+.one{
+  background-color: #cccccc;
 }
 
-.2 {
-  background-color: yellow;
+.two {
+  background-color: #d6ffff;
 }
 
+.three {
+  background-color: #716d6a;
+}
 
-.chart {
-  background-color: grey;
+.four {
+ background-color: #809999;
 }
