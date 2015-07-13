@@ -1,7 +1,6 @@
 "use strict";
 
 var React = require('react/addons');
-//var Legend = require('./Legend.jsx');
 
 var Chart = React.createClass({
   getDefaultProps: function() {
@@ -11,8 +10,8 @@ var Chart = React.createClass({
                   6:"six",7:"seven",8:"eight",
                   9:"nine",10:"ten"}
     };
-  },
 
+  },
   propTypes: {
     color: React.PropTypes.array,
     title: React.PropTypes.array,
@@ -24,48 +23,66 @@ var Chart = React.createClass({
 
   render: function(){
     var bars = [];
-    //TODO add width between bars option
-    var barW = (this.props.width/Object.keys(this.props.data[0]).length).toString();
+    //var barW = (this.props.width/Object.keys(this.props.data[0]).length).toString();
     var tallest = 0;
+    var numAttr = 0;
     this.props.data.forEach( function(d) {
+      numAttr = 0;
       for (var key in d){
+        numAttr += 1;
         if (d[key] >= tallest){
           tallest += d[key];
         }
       }
     });
+    //if more than one data entity being graphed
+    var NSDW = this.props.width/numAttr;
 
-    this.props.data.forEach( function(entity,i){
-      var height = '';
+    // ChartSectionsObjs = {attr: [ReactElements]},...}
+
+    var ChartSectionObjs = {};
+
+    /*create for loop for inner divs to append to parent neg space div*/
+    this.props.data.forEach(function(entity,i){
+      var offset = ((NSDW*9)/10)/this.props.data.length;
+      var height = 0;
       for (var k in entity){
         height = ((this.props.height*entity[k])/tallest).toString();
-        bars.push( React.createElement('div',{
-                                              style: {
-                                                      width: barW,
-                                                      height: this.props.height,
-                                                      backgroundColor: "white",
-                                                      float: "right",
-                                                      position: "relative"
-                                                      },
-                                              className: "negative-space"
-                                              },
-          React.createElement('div',{
-                                    style: {
-                                      height: height,
-                                      width: barW,
-                                      borderStyle: "solid",
-                                      borderWidth: "1",
-                                      borderColor: "black",
-                                      float: "right",
-                                      position: "absolute",
-                                      bottom: 0
-                                    },
-                                    className: this.props.numberMap[i]
-                                      })
-                    )
-                 );
+
+        var bar = React.createElement('div',{
+                                             style: {
+                                               bottom: 0,
+                                               right: 0 + offset*i,
+                                               width: offset,
+                                               height: height,
+                                               position: "absolute"
+                                             },
+                                             className: this.props.numberMap[i]
+                                            });
+        if (k in ChartSectionObjs){
+          ChartSectionObjs[k].push(bar);
+        } else {
+          ChartSectionObjs[k] = [bar];
+        }
       }
-     }.bind(this));
+    }.bind(this));
+
+    // when finished building ChartSectionObjs, place attr.bars as children of a negspacediv, and place array of negspacedivs as children of graph container
+    for (var k in ChartSectionObjs){
+          bars.push( React.createElement('div',{
+                                                      style: {
+                                                        backgroundColor: "white",
+                                                        width: NSDW,
+                                                        height: this.props.height,
+                                                        float: "right",
+                                                        position: "relative"
+                                                      },
+                                                      className: "negative-space"
+                                                      },
+                                                      ChartSectionObjs[k]
+                                               )
+                           );
+    }
 
     return (
       React.createElement('div',{
