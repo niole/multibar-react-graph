@@ -17,6 +17,7 @@ var Interface = React.createClass({
         width={500}
         xHeader={"days of the week"}
         yHeader={"number of organisms"}
+        scale={100}
       />
     );
   }
