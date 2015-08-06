@@ -25,7 +25,7 @@ var Chart = React.createClass({
     scale: React.PropTypes.number
   },
 
-  render: function(){
+  getInitialState: function() {
     var bar = new Bars(this.props.width, this.props.height, this.props.data,this.props.numberMap, this.props.scale);
     var legend = new Legend(this.props.titles,this.props.numberMap);
 
@@ -35,50 +35,60 @@ var Chart = React.createClass({
 
     var width_neg = bar.width_negspace_div(numAttr);
     var ChartObjects = bar.create_data_bars(width_neg, tallest);
-    var bars = bar.create_neg_divs(ChartObjects, width_neg);
+    this.bars = bar.create_neg_divs(ChartObjects, width_neg);
 
     var boxes_titles = legend.build_legend();
-    var DisplayLegend = legend.ul_element(boxes_titles);
+    this.DisplayLegend = legend.ul_element(boxes_titles);
 
-
-    var yScale = 0;
-
+    this.yScale = 0;
     if (this.props.scale === null){
-      yScale = Math.pow(10, (tallest.toString().length-1));
+      this.yScale = Math.pow(10, (tallest.toString().length-1));
     } else {
-      yScale = this.props.scale;
+      this.yScale = this.props.scale;
     }
+    this.pxPerTd = Math.ceil((this.props.height*this.yScale)/tallest);
+    return null;
 
-    var numTds = Math.floor(tallest/yScale);
-    var pxPerTd = (this.props.height*yScale)/tallest;
+  },
+  componentDidMount: function(){
+    var y = this.props.height;
+    var x = 30;
+    var canvas = document.createElement('canvas');
+    var numTds = this.props.height/this.pxPerTd;
+    var rem = this.props.height%this.pxPerTd;
 
-    var ys = [];
-    for (var i=2; i<numTds; i++){
-      ys.push(React.createElement('tr', {
-                                        style: {
-                                          width: "10px",
-                                          height: pxPerTd-5,
-                                        }
-                                        },
-                                  React.createElement('td',{
-                                                            style: {
-                                                              width: "10px",
-                                                              height: pxPerTd-5,
-                                                              borderTop: "1px solid black",
-                                                              textAlign: "left"
-                                                             }
-                                                            },
-                                                            (numTds-i)*yScale
-                                                      )
-                                 )
-               );
+    canvas.height = this.props.height;
+    canvas.width = 30;
+    canvas.style.position = "absolute";
+    canvas.style.bottom = this.props.height/5;
+    canvas.style.left = (this.props.width/5)+x;
+
+    $('.chart-container').append(canvas);
+    var ctx = canvas.getContext('2d');
+    ctx.beginPath();
+    for (var h=0; h < numTds; h++){
+        var b = 0;
+        ctx.moveTo(x,y);
+        y -= this.pxPerTd;
+        ctx.lineTo(x,y);
+        ctx.stroke();
+
+        ctx.moveTo(x,y);
+        ctx.lineTo(x-10,y);
+        ctx.stroke();
+        ctx.font="20px Georgia";
+        ctx.fillText((this.yScale*h).toString(),x-10,y);
     }
+    ctx.moveTo(x,y);
+    ctx.lineTo(x,y-rem);
+    ctx.stroke();
+  },
 
-
+  render: function(){
 
     return (
       React.createElement('div',{},
-        DisplayLegend,
+        this.DisplayLegend,
         React.createElement('div',{
                                   style:{
                                     textAlign: "center",
@@ -87,6 +97,7 @@ var Chart = React.createClass({
                                     width: parseInt(this.props.width)+parseInt(this.props.width/5),
                                     height: parseInt(this.props.height)+parseInt(this.props.height/5)
                                     },
+                                  className: "chart-parent"
                                   },
           React.createElement('div',{
                                     style: {
@@ -103,16 +114,16 @@ var Chart = React.createClass({
                                     }, this.props.yHeader),
 
           React.createElement('div',{
-                className: "chart-container",
-                style: {
-                  float: "right",
-                  borderBottom: "1px solid black",
-                  borderLeft: "1px solid black",
-                  width: this.props.width+"px",
-                  height: this.props.height+"px"
-                }
-                },
-                bars
+                                    className: "chart-container",
+                                    style: {
+                                      float: "right",
+                                      //borderBottom: "1px solid black",
+                                      //borderLeft: "1px solid black",
+                                      width: this.props.width+"px",
+                                      height: this.props.height+"px"
+                                    }
+                                   },
+                                   this.bars
           ),
           React.createElement('div',{
                                   style: {
@@ -120,14 +131,7 @@ var Chart = React.createClass({
                                     bottom: "7%",
                                     left: "60%"
                                   }
-                                  }, this.props.xHeader),
-        React.createElement('table',{
-                                    style:{
-                                      height: this.props.height,
-                                      position: "relative",
-                                      left: (this.props.width*9/56).toString()+"px"
-                                      }
-                                    },ys)
+                                  }, this.props.xHeader)
       )
      )
     );
