@@ -66,7 +66,7 @@ var Chart = React.createClass({
     $('.chart-container').append(canvas);
     var ctx = canvas.getContext('2d');
     ctx.beginPath();
-    for (var h=0; h < numTds; h++){
+    for (var h=1; h < numTds+1; h++){
         var b = 0;
         ctx.moveTo(x,y);
         y -= this.pxPerTd;
@@ -77,6 +77,8 @@ var Chart = React.createClass({
         ctx.lineTo(x-10,y);
         ctx.stroke();
         ctx.font="20px Georgia";
+        ctx.textAlign="end";
+        console.log(this.yScale*h);
         ctx.fillText((this.yScale*h).toString(),x-10,y);
     }
     ctx.moveTo(x,y);
