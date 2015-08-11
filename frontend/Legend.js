@@ -8,7 +8,7 @@ function Legend(titles,numberMap){
   this.numberMap = numberMap;
 }
 
-Legend.prototype.build_legend = function(){
+Legend.prototype.build_legend = function(font, size){
   var boxes_titles = [];
   this.titles.forEach(function(c,i){
     boxes_titles.push(
@@ -23,7 +23,9 @@ Legend.prototype.build_legend = function(){
           React.createElement('td',{
                                     style: {
                                       width: "100%",
-                                      float: "right"
+                                      float: "right",
+                                      fontFamily: font,
+                                      fontSize: size,
                                             }
                                     },
                                     this.titles[i])
@@ -37,10 +39,10 @@ Legend.prototype.build_legend = function(){
 Legend.prototype.ul_element = function(list_elts){
   return (
     React.createElement('table',{
-                                  style: {
-                                         border: "1px solid grey",
-                                         float: "left"
-                                         }
+                                className: "legend-table",
+                                style: {
+                                       float: "left"
+                                       }
                                 },
         React.createElement('tbody',{},
                                     list_elts)

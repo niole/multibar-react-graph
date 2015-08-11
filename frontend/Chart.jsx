@@ -12,6 +12,8 @@ var Chart = React.createClass({
                   6:"six",7:"seven",8:"eight",
                   9:"nine",10:"ten"},
       scale: null,
+      fontFamily: "Arial",
+      fontSize: "10px"
     };
 
   },
@@ -22,7 +24,10 @@ var Chart = React.createClass({
     yHeader: React.PropTypes.string,
     width: React.PropTypes.number,
     height: React.PropTypes.number,
-    scale: React.PropTypes.number
+    scale: React.PropTypes.number,
+    fontFamily: React.PropTypes.string,
+    fontSize: React.PropTypes.string
+
   },
 
   getInitialState: function() {
@@ -37,7 +42,7 @@ var Chart = React.createClass({
     var ChartObjects = bar.create_data_bars(width_neg, tallest);
     this.bars = bar.create_neg_divs(ChartObjects, width_neg);
 
-    var boxes_titles = legend.build_legend();
+    var boxes_titles = legend.build_legend(this.props.fontFamily, this.props.fontSize);
     this.DisplayLegend = legend.ul_element(boxes_titles);
 
     this.yScale = 0;
@@ -59,11 +64,10 @@ var Chart = React.createClass({
 
     canvas.height = this.props.height;
     canvas.width = 30;
-    canvas.style.position = "absolute";
-    canvas.style.bottom = this.props.height/5;
-    canvas.style.left = (this.props.width/5)+x;
+    canvas.style.display = "inline-block";
+    canvas.style.float = "right";
 
-    $('.chart-container').append(canvas);
+    $('.chart-filler').append(canvas);
     var ctx = canvas.getContext('2d');
     ctx.beginPath();
     for (var h=1; h < numTds+1; h++){
@@ -76,7 +80,7 @@ var Chart = React.createClass({
         ctx.moveTo(x,y);
         ctx.lineTo(x-10,y);
         ctx.stroke();
-        ctx.font="20px Georgia";
+        ctx.font = this.props.fontSize+" "+this.props.fontFamily;
         ctx.textAlign="end";
         console.log(this.yScale*h);
         ctx.fillText((this.yScale*h).toString(),x-10,y);
@@ -89,7 +93,7 @@ var Chart = React.createClass({
   render: function(){
 
     return (
-      React.createElement('div',{},
+      React.createElement('div',{className: "react-container"},
         this.DisplayLegend,
         React.createElement('div',{
                                   style:{
@@ -102,41 +106,50 @@ var Chart = React.createClass({
                                   className: "chart-parent"
                                   },
           React.createElement('div',{
+                                    className: "chart-filler",
+                                    style: {
+                                      float: "left",
+                                      width: this.props.width/5,
+                                      height: this.props.height
+                                      }
+                                    },
+          React.createElement('span',{
+                                    className: 'y-header',
                                     style: {
                                       left: 0,
-                                      bottom: "50%",
                                       position: "absolute",
-                                      top: "50%",
+                                      top: "35%",
                                       webkitTransform: 'rotate(90deg)',
                                       mozTransform: 'rotate(90deg)',
                                       msTransform: 'rotate(90deg)',
                                       oTransform: 'rotate(90deg)',
-                                      transform: 'rotate(90deg)'
-                                    }
-                                    }, this.props.yHeader),
-
+                                      transform: 'rotate(90deg)',
+                                      fontFamily: this.props.fontFamily
+                                    },
+                                    }, this.props.yHeader
+                               )
+                              ),
           React.createElement('div',{
                                     className: "chart-container",
                                     style: {
-                                      float: "right",
-                                      //borderBottom: "1px solid black",
-                                      //borderLeft: "1px solid black",
+                                      float: "left",
                                       width: this.props.width+"px",
-                                      height: this.props.height+"px"
+                                      height: this.props.height+"px",
+                                      borderBottom: "1px solid black"
                                     }
                                    },
                                    this.bars
           ),
-          React.createElement('div',{
+          React.createElement('span',{
                                   style: {
                                     position: "absolute",
                                     bottom: "7%",
-                                    left: "60%"
-                                  }
-                                  }, this.props.xHeader)
-      )
-     )
-    );
+                                    left: "50%",
+                                    fontFamily: this.props.fontFamily
+                                    }
+                                   },this.props.xHeader))
+                    )
+     );
   }
 });
 
