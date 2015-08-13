@@ -113,17 +113,19 @@ var Chart = React.createClass({
                                       height: this.props.height
                                       }
                                     },
-          React.createElement('span',{
+          React.createElement('div',{
                                     className: 'y-header',
                                     style: {
+                                      textAlign: 'center',
+                                      maxWidth: this.props.width/5,
+                                      maxHeight: this.props.height,
+                                      wordWrap: "break-word",
                                       left: 0,
                                       position: "absolute",
                                       top: "35%",
-                                      webkitTransform: 'rotate(90deg)',
-                                      mozTransform: 'rotate(90deg)',
-                                      msTransform: 'rotate(90deg)',
-                                      oTransform: 'rotate(90deg)',
-                                      transform: 'rotate(90deg)',
+                                      paddingRight: "2em",
+                                      marginRight: "2em",
+                                      fontSize: this.props.fontSize,
                                       fontFamily: this.props.fontFamily
                                     },
                                     }, this.props.yHeader
@@ -140,15 +142,20 @@ var Chart = React.createClass({
                                    },
                                    this.bars
           ),
-          React.createElement('span',{
-                                  style: {
-                                    position: "absolute",
-                                    bottom: "7%",
-                                    left: "50%",
-                                    fontFamily: this.props.fontFamily
+          React.createElement('div',{
+                                    style: {
+                                      textAlign: "center",
+                                      maxWidth: this.props.width-(this.props.width/5),
+                                      maxHeight: this.props.height/5,
+                                      wordWrap: "break-word",
+                                      paddingTop: "2em",
+                                      marginTop: "2em",
+                                      fontFamily: this.props.fontFamily,
+                                      fontSize: this.props.fontSize
                                     }
-                                   },this.props.xHeader))
-                    )
+                                   },this.props.xHeader)
+              )
+        )
      );
   }
 });
